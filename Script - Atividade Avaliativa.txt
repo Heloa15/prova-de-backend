@@ -1,0 +1,52 @@
+Script - Atividade Avaliativa
+
+CREATE DATABASE escola_oficinas;
+USE escola_oficinas;
+
+CREATE TABLE alunos (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    turma VARCHAR(20)
+);
+
+CREATE TABLE oficinas (
+    id INTGER AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    categoria VARCHAR(50),
+    vagas INTEGER CHECK (vagas >= 1)
+);
+
+CREATE TABLE inscricoes (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    data_inscricao DATE,
+    id_aluno INTEGER,
+    id_oficina INTEGER,
+    FOREIGN KEY (id_aluno) REFERENCES alunos(id)
+  );
+
+INSERT INTO alunos (nome, turma) VALUES
+('Ana Beatriz', '6A'),
+('Lucas Pereira', '7B'),
+('Mariana Silva', '6A'),
+('Carlos Eduardo', '8C');
+
+INSERT INTO oficinas (nome, categoria, vagas) VALUES
+('Teatro', 'Artes', 20),
+('Robótica', 'Tecnologia', 15),
+('Xadrez', 'Estratégia', 10),
+('Dança', 'Artes', 25);
+
+INSERT INTO inscricoes (data_inscricao, id_aluno, id_oficina) VALUES
+(CURDATE(), 1, 1),
+(CURDATE(), 1, 3),
+(CURDATE(), 2, 2),
+(CURDATE(), 3, 1),
+(CURDATE(), 4, 4);
+
+SELECT id_oficina AS oficina, COUNT(*) AS total_inscricoes FROM inscricoes
+
+SELECT id_aluno AS aluno, COUNT(*) AS total_oficinas FROM inscricoes
+
+SELECT o.id, o.nome, o.vagas - (SELECT COUNT(*) FROM inscricoes i WHERE i.id_oficina = o.id) AS vagas restantes FROM oficinas o;
+ 
+SELECT a.id, a.nome, (SELECT COUNT(*) FROM inscricoes i WHERE i.id_aluno = a.id) AS total_oficinas FROM alunos a;
